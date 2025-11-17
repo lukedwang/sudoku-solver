@@ -1,0 +1,86 @@
+/* Basic reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Page title */
+h1 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+    text-align: center;
+}
+
+/* Sudoku grid container */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(9, 50px);
+    grid-template-rows: repeat(9, 50px);
+    gap: 0;
+    background-color: #333;
+}
+
+/* Individual cells */
+.grid input {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 1.5rem;
+    border: 1px solid #999;
+    outline: none;
+}
+
+/* Thicker borders around 3x3 subgrids */
+.grid input:nth-child(9n+1) {
+    border-left: 3px solid black;
+}
+.grid input:nth-child(9n) {
+    border-right: 3px solid black;
+}
+.grid input:nth-child(-n+9) {
+    border-top: 3px solid black;
+}
+.grid input:nth-child(n+73) {
+    border-bottom: 3px solid black;
+}
+
+/* Focused cell styling */
+.grid input:focus {
+    background-color: #e0f7fa;
+}
+
+/* Buttons */
+button {
+    margin: 10px 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #2196f3;
+    color: white;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #1976d2;
+}
+
+/* Message area */
+#message {
+    margin-top: 15px;
+    font-size: 1rem;
+    color: #d32f2f;
+    text-align: center;
+}

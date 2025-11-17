@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sudoku Solver</title>
+    <link rel="stylesheet" href="style.css">
+
+
+    <style>
+        /* Basic styling for a 9×9 grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(9, 40px);
+            gap: 2px;
+            margin: 20px auto;
+            width: fit-content;
+        }
+
+        .grid input {
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        /* Thicker borders around 3×3 subgrids */
+        .grid input:nth-child(9n+1) { border-left: 3px solid black; }
+        .grid input:nth-child(9n) { border-right: 3px solid black; }
+        .grid input {
+            border: 1px solid #aaa;
+        }
+        .grid input {
+            border-top: 1px solid #aaa;
+        }
+        .grid input:nth-child(-n + 9) {
+            border-top: 3px solid black;
+        }
+        .grid input:nth-child(n + 73) {
+            border-bottom: 3px solid black;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 style="text-align:center;">Sudoku Solver</h1>
+
+    <div class="grid" id="grid"></div>
+
+    <div style="text-align:center;">
+        <button onclick="solveSudoku()">Solve</button>
+        <button onclick="clearGrid()">Clear</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
