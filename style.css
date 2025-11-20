@@ -13,52 +13,55 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    background-image: url('forehead.jpeg');
+    background-size: cover; /* or '100% 100%' for stretching */
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* Page title */
 h1 {
+    margin-top: 100px;
     margin-bottom: 20px;
-    font-size: 2rem;
+    font-size: 4rem;
     text-align: center;
 }
 
-/* Sudoku grid container */
 .grid {
     display: grid;
-    grid-template-columns: repeat(9, 50px);
-    grid-template-rows: repeat(9, 50px);
-    gap: 0;
-    background-color: #333;
-}
-
-/* Individual cells */
-.grid input {
+    grid-template-columns: repeat(3, auto);
+    width: fit-content;
+    margin: auto;
+    border: 3px solid #222;
+    background-color: transparent;
+    transform: scale(0.8);
+  }
+  
+  /* Each 3x3 square */
+  .box {
+    display: grid;
+    grid-template-columns: repeat(3, 50px);
+    grid-template-rows: repeat(3, 50px);
+    border: 3px solid #222;
+    background-color: transparent;
+  }
+  
+  /* Individual cells */
+  .box input {
+    color: black;
     width: 50px;
     height: 50px;
     text-align: center;
-    font-size: 1.5rem;
-    border: 1px solid #999;
+    font-size: 20px;
+    border: 1px solid #222;
     outline: none;
-}
+    background-color: transparent;
+  }
 
-/* Thicker borders around 3x3 subgrids */
-.grid input:nth-child(9n+1) {
-    border-left: 3px solid black;
-}
-.grid input:nth-child(9n) {
-    border-right: 3px solid black;
-}
-.grid input:nth-child(-n+9) {
-    border-top: 3px solid black;
-}
-.grid input:nth-child(n+73) {
-    border-bottom: 3px solid black;
-}
-
-/* Focused cell styling */
-.grid input:focus {
-    background-color: #e0f7fa;
-}
+  .box input.solved {
+    color: green;
+    font-weight: bold;
+  }
 
 /* Buttons */
 button {

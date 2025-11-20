@@ -2,25 +2,19 @@
 window.addEventListener('DOMContentLoaded', () => {
     const grid = document.getElementById('grid');
 
-    // Generate 81 input cells
-    for (let i = 0; i < 81; i++) {
-        const input = document.createElement('input');
-        input.setAttribute('type', 'text');
-        input.setAttribute('maxlength', '1');
-        input.setAttribute('data-index', i);
+    const inputs = document.querySelectorAll('.box input');
 
-        // Allow only digits 1-9
-        input.addEventListener('input', function () {
-            this.value = this.value.replace(/[^1-9]/g, '');
-        });
-
-        grid.appendChild(input);
-    }
+    inputs.forEach(input => {
+      input.addEventListener('input', () => {
+        // Remove anything that isn't 1-9
+        input.value = input.value.replace(/[^1-9]/g, '');
+      });
+    });
 });
 
 // Read the grid values into a JS array
 function readBoard() {
-    const inputs = document.querySelectorAll('#grid input');
+    const inputs = document.querySelectorAll('.box input');
     const board = [];
     inputs.forEach(input => {
         const val = parseInt(input.value);
@@ -31,8 +25,11 @@ function readBoard() {
 
 // Write JS array values back to the grid
 function writeBoard(board) {
-    const inputs = document.querySelectorAll('#grid input');
+    const inputs = document.querySelectorAll('.box input');
     inputs.forEach((input, idx) => {
+        if (!input.value) {
+            input.classList.add('solved');
+        }
         input.value = board[idx] === 0 ? '' : board[idx];
     });
 }
@@ -109,7 +106,7 @@ function solveSudoku() {
 
 // Clear button handler
 function clearGrid() {
-    const inputs = document.querySelectorAll('#grid input');
+    const inputs = document.querySelectorAll('.box input');
     inputs.forEach(input => input.value = '');
     setMessage('');
 }
