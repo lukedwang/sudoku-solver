@@ -407,6 +407,55 @@ button:last-child:hover {
     }
 }
 
+/* Shorter portrait screens (e.g., 360x640) - need less margin since screen is shorter */
+@media (max-aspect-ratio: 4/5) and (max-height: 720px) {
+    :root {
+        --cell-size: min(calc((100vw - 70px) / 9), 30px);
+    }
+    
+    body {
+        background-size: 180% auto;
+        background-position: 50% 0%;
+    }
+    
+    h1 {
+        margin-top: 12vh;
+        font-size: 1.4rem;
+        margin-bottom: 8px;
+    }
+    
+    .button-container {
+        margin-top: 12px;
+    }
+}
+
+/* Even shorter portrait screens */
+@media (max-aspect-ratio: 4/5) and (max-height: 640px) {
+    :root {
+        --cell-size: min(calc((100vw - 80px) / 9), 26px);
+    }
+    
+    body {
+        background-size: 200% auto;
+        background-position: 50% 0%;
+    }
+    
+    h1 {
+        margin-top: 10vh;
+        font-size: 1.2rem;
+        margin-bottom: 6px;
+    }
+    
+    .button-container {
+        margin-top: 10px;
+    }
+    
+    button {
+        padding: 8px 16px;
+        font-size: 0.8rem;
+    }
+}
+
 /* Tall portrait screens (typical phones like iPhone 14 Pro) */
 @media (max-aspect-ratio: 1/2) {
     :root {
