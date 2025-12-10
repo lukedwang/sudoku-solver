@@ -1,3 +1,19 @@
+/* CSS Variables */
+:root {
+    --font-title: 'Syne', sans-serif;
+    --font-body: 'Outfit', sans-serif;
+    --color-primary: #6366f1;
+    --color-primary-dark: #4f46e5;
+    --color-accent: #22d3ee;
+    --color-text: #1e293b;
+    --color-text-light: #64748b;
+    --color-solved: #10b981;
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.12);
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.4);
+}
+
 /* Basic reset */
 * {
     box-sizing: border-box;
@@ -7,83 +23,244 @@
 
 /* Body styling */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
+    font-family: var(--font-body);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    justify-content: center;
+    padding: 40px 20px;
     background-image: url('forehead.jpeg');
-    background-size: cover; /* or '100% 100%' for stretching */
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 /* Page title */
 h1 {
-    margin-top: 120px;
-    font-size: 3.5rem;
+    font-family: var(--font-title);
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 800;
     text-align: center;
+    color: var(--color-text);
+    margin-bottom: 32px;
+    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+    
+    /* Page load animation */
+    opacity: 0;
+    animation: fadeSlideIn 0.6s ease-out forwards;
 }
 
+/* Glassmorphism card container */
+.card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: var(--shadow-soft);
+    
+    /* Page load animation */
+    opacity: 0;
+    animation: fadeSlideIn 0.6s ease-out 0.15s forwards;
+}
+
+/* Grid container */
 .grid {
     display: grid;
     grid-template-columns: repeat(3, auto);
     width: fit-content;
-    margin: auto;
-    border: 3px solid #222;
-    background-color: transparent;
-    transform: scale(0.7);
-  }
-  
-  /* Each 3x3 square */
-  .box {
-    display: grid;
-    grid-template-columns: repeat(3, 50px);
-    grid-template-rows: repeat(3, 50px);
-    border: 3px solid #222;
-    background-color: transparent;
-  }
-  
-  /* Individual cells */
-  .box input {
-    color: black;
-    width: 50px;
-    height: 50px;
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-    border: 1px solid #222;
-    outline: none;
-    background-color: transparent;
-  }
+    margin: 0 auto;
+    border: 3px solid var(--color-text);
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.5);
+}
 
-  .box input.solved {
-    color: green;
-    font-weight: normal;
-  }
+/* Each 3x3 square */
+.box {
+    display: grid;
+    grid-template-columns: repeat(3, 48px);
+    grid-template-rows: repeat(3, 48px);
+    border: 2px solid var(--color-text);
+}
+
+/* Remove double borders between boxes */
+.box:nth-child(1), .box:nth-child(2), .box:nth-child(3) {
+    border-top: none;
+}
+.box:nth-child(7), .box:nth-child(8), .box:nth-child(9) {
+    border-bottom: none;
+}
+.box:nth-child(1), .box:nth-child(4), .box:nth-child(7) {
+    border-left: none;
+}
+.box:nth-child(3), .box:nth-child(6), .box:nth-child(9) {
+    border-right: none;
+}
+
+/* Individual cells */
+.box input {
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.6);
+    transition: all 0.2s ease;
+}
+
+.box input:hover {
+    background-color: rgba(99, 102, 241, 0.08);
+}
+
+.box input:focus {
+    background-color: rgba(99, 102, 241, 0.15);
+    box-shadow: inset 0 0 0 2px var(--color-primary);
+    transform: scale(1.05);
+    z-index: 1;
+    position: relative;
+}
+
+/* Solved cells styling */
+.box input.solved {
+    color: var(--color-solved);
+    font-weight: 700;
+}
+
+/* Solved cell pop animation */
+.box input.solved-animate {
+    animation: solvedPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Button container */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 28px;
+}
 
 /* Buttons */
 button {
-    margin: 10px 5px;
-    padding: 10px 20px;
+    font-family: var(--font-body);
     font-size: 1rem;
+    font-weight: 600;
+    padding: 14px 36px;
     border: none;
-    border-radius: 6px;
+    border-radius: 12px;
     cursor: pointer;
-    background-color: #2196f3;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
     color: white;
-    transition: background-color 0.2s;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    transition: all 0.25s ease;
 }
 
 button:hover {
-    background-color: #1976d2;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+}
+
+button:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+/* Secondary button style for Clear */
+button:last-child {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    color: var(--color-text);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+button:last-child:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Message area */
 #message {
-    margin-top: 15px;
-    font-size: 1rem;
-    color: #d32f2f;
+    margin-top: 24px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text);
     text-align: center;
+    padding: 8px 24px;
+    border-radius: 8px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Page load animation */
+    opacity: 0;
+    animation: fadeSlideIn 0.6s ease-out 0.3s forwards;
+}
+
+#message:empty {
+    visibility: hidden;
+}
+
+/* Keyframe Animations */
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes solvedPop {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.15);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .card {
+        padding: 20px;
+        border-radius: 18px;
+    }
+    
+    .box {
+        grid-template-columns: repeat(3, 38px);
+        grid-template-rows: repeat(3, 38px);
+    }
+    
+    .box input {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+    
+    .button-container {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    button {
+        padding: 12px 28px;
+        width: 100%;
+    }
 }

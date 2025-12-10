@@ -1,14 +1,12 @@
 // Wait for DOM to load
 window.addEventListener('DOMContentLoaded', () => {
-    const grid = document.getElementById('grid');
-
     const inputs = document.querySelectorAll('.box input');
 
     inputs.forEach(input => {
-      input.addEventListener('input', () => {
-        // Remove anything that isn't 1-9
-        input.value = input.value.replace(/[^1-9]/g, '');
-      });
+        input.addEventListener('input', () => {
+            // Remove anything that isn't 1-9
+            input.value = input.value.replace(/[^1-9]/g, '');
+        });
     });
 });
 
@@ -23,14 +21,24 @@ function readBoard() {
     return board;
 }
 
-// Write JS array values back to the grid
+// Write JS array values back to the grid with staggered animation
 function writeBoard(board) {
     const inputs = document.querySelectorAll('.box input');
+    const emptyCells = [];
+    
+    // First pass: identify which cells need to be filled
     inputs.forEach((input, idx) => {
-        if (!input.value) {
-            input.classList.add('solved');
+        if (!input.value && board[idx] !== 0) {
+            emptyCells.push({ input, value: board[idx], idx });
         }
-        input.value = board[idx] === 0 ? '' : board[idx];
+    });
+    
+    // Animate solved cells with staggered delay
+    emptyCells.forEach((cell, i) => {
+        setTimeout(() => {
+            cell.input.value = cell.value;
+            cell.input.classList.add('solved', 'solved-animate');
+        }, i * 25); // 25ms delay between each cell
     });
 }
 
@@ -107,6 +115,9 @@ function solveSudoku() {
 // Clear button handler
 function clearGrid() {
     const inputs = document.querySelectorAll('.box input');
-    inputs.forEach(input => input.value = '');
+    inputs.forEach(input => {
+        input.value = '';
+        input.classList.remove('solved', 'solved-animate');
+    });
     setMessage('');
 }
