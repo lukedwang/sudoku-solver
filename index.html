@@ -10,7 +10,24 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Big Brain Raylia</h1>
+    <!-- Passcode Screen -->
+    <div id="passcode-screen">
+        <div class="passcode-container">
+            <h2>Enter Passcode</h2>
+            <div class="passcode-inputs">
+                <input type="tel" maxlength="1" class="passcode-digit" data-index="0" inputmode="numeric" pattern="[0-9]*">
+                <input type="tel" maxlength="1" class="passcode-digit" data-index="1" inputmode="numeric" pattern="[0-9]*">
+                <input type="tel" maxlength="1" class="passcode-digit" data-index="2" inputmode="numeric" pattern="[0-9]*">
+                <input type="tel" maxlength="1" class="passcode-digit" data-index="3" inputmode="numeric" pattern="[0-9]*">
+            </div>
+            <p id="passcode-error"></p>
+            <button id="passcode-submit">Submit</button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-app">
+        <h1>Big Brain Raylia</h1>
 
     <div class="card">
         <div class="grid">
@@ -121,7 +138,8 @@
         </div>
     </div>
 
-    <div id="message"></div>
+        <div id="message"></div>
+    </div>
 
     <script src="app.js"></script>
 </body>

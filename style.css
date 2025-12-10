@@ -5,13 +5,11 @@
     --color-primary: #6366f1;
     --color-primary-dark: #4f46e5;
     --color-accent: #22d3ee;
-    --color-text: #1e293b;
-    --color-text-light: #64748b;
-    --color-solved: #10b981;
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.4);
-    --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.12);
-    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.4);
+    --color-solved: #4ade80;
+    --border-color: rgba(255, 255, 255, 0.85);
+    --border-thick: rgba(255, 255, 255, 0.95);
+    /* Cell size: constrained to fit in forehead area - ~40% of smaller viewport dimension */
+    --cell-size: min(calc((min(100vw, 100vh) * 0.38) / 9), 42px);
 }
 
 /* Basic reset */
@@ -21,46 +19,183 @@
     padding: 0;
 }
 
+/* ==================== PASSCODE SCREEN ==================== */
+#passcode-screen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+#passcode-screen.hidden {
+    display: none;
+}
+
+.passcode-container {
+    text-align: center;
+    padding: 40px;
+}
+
+.passcode-container h2 {
+    font-family: var(--font-title);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 32px;
+    letter-spacing: 0.5px;
+}
+
+.passcode-inputs {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.passcode-digit {
+    width: 60px;
+    height: 72px;
+    font-family: var(--font-body);
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    outline: none;
+    transition: all 0.2s ease;
+    caret-color: var(--color-primary);
+}
+
+.passcode-digit:focus {
+    border-color: var(--color-primary);
+    background: rgba(99, 102, 241, 0.15);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+.passcode-digit.filled {
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+#passcode-error {
+    color: #f87171;
+    font-size: 0.9rem;
+    font-weight: 500;
+    min-height: 24px;
+    margin-bottom: 16px;
+}
+
+#passcode-submit {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 14px 48px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: white;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+    transition: all 0.25s ease;
+}
+
+#passcode-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 28px rgba(99, 102, 241, 0.5);
+}
+
+#passcode-submit:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Shake animation for wrong passcode */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+    20%, 40%, 60%, 80% { transform: translateX(8px); }
+}
+
+.passcode-inputs.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+.passcode-inputs.shake .passcode-digit {
+    border-color: #f87171;
+    background: rgba(248, 113, 113, 0.1);
+}
+
+/* Main app hidden by default */
+#main-app {
+    display: none;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+
+#main-app.visible {
+    display: flex;
+}
+
+/* ==================== END PASSCODE SCREEN ==================== */
+
 /* Body styling */
 body {
     font-family: var(--font-body);
-    min-height: 100vh;
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile browsers */
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
+    justify-content: flex-start;
+    padding: 12px;
+    padding-top: 3vh;
     background-image: url('forehead.jpeg');
     background-size: cover;
-    background-position: center;
+    background-position: center top;
     background-repeat: no-repeat;
-    background-attachment: fixed;
+}
+
+/* Subtle dark overlay for better contrast */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+    z-index: 0;
 }
 
 /* Page title */
 h1 {
+    position: relative;
+    z-index: 1;
     font-family: var(--font-title);
-    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
     font-weight: 800;
     text-align: center;
-    color: var(--color-text);
-    margin-bottom: 32px;
-    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+    color: white;
+    margin-bottom: 12px;
+    text-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.5),
+        0 4px 20px rgba(0, 0, 0, 0.3);
     
     /* Page load animation */
     opacity: 0;
     animation: fadeSlideIn 0.6s ease-out forwards;
 }
 
-/* Glassmorphism card container */
+/* Transparent card container */
 .card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px;
-    padding: 32px;
-    box-shadow: var(--shadow-soft);
+    position: relative;
+    z-index: 1;
+    background: transparent;
+    padding: 8px;
     
     /* Page load animation */
     opacity: 0;
@@ -73,18 +208,19 @@ h1 {
     grid-template-columns: repeat(3, auto);
     width: fit-content;
     margin: 0 auto;
-    border: 3px solid var(--color-text);
-    border-radius: 12px;
+    border: 3px solid var(--border-thick);
+    border-radius: 8px;
     overflow: hidden;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: transparent;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
 /* Each 3x3 square */
 .box {
     display: grid;
-    grid-template-columns: repeat(3, 48px);
-    grid-template-rows: repeat(3, 48px);
-    border: 2px solid var(--color-text);
+    grid-template-columns: repeat(3, var(--cell-size));
+    grid-template-rows: repeat(3, var(--cell-size));
+    border: 2px solid var(--border-thick);
 }
 
 /* Remove double borders between boxes */
@@ -103,27 +239,32 @@ h1 {
 
 /* Individual cells */
 .box input {
-    width: 48px;
-    height: 48px;
+    width: var(--cell-size);
+    height: var(--cell-size);
     text-align: center;
     font-family: var(--font-body);
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--color-text);
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    font-size: calc(var(--cell-size) * 0.45);
+    font-weight: 700;
+    color: white;
+    border: 1px solid var(--border-color);
     outline: none;
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(0, 0, 0, 0.25);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
     transition: all 0.2s ease;
 }
 
+.box input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
 .box input:hover {
-    background-color: rgba(99, 102, 241, 0.08);
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
 .box input:focus {
-    background-color: rgba(99, 102, 241, 0.15);
+    background-color: rgba(99, 102, 241, 0.35);
     box-shadow: inset 0 0 0 2px var(--color-primary);
-    transform: scale(1.05);
+    transform: scale(1.08);
     z-index: 1;
     position: relative;
 }
@@ -132,6 +273,7 @@ h1 {
 .box input.solved {
     color: var(--color-solved);
     font-weight: 700;
+    text-shadow: 0 0 10px rgba(74, 222, 128, 0.6), 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 /* Solved cell pop animation */
@@ -143,28 +285,29 @@ h1 {
 .button-container {
     display: flex;
     justify-content: center;
-    gap: 16px;
-    margin-top: 28px;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
 }
 
 /* Buttons */
 button {
     font-family: var(--font-body);
-    font-size: 1rem;
+    font-size: clamp(0.85rem, 2.5vw, 0.95rem);
     font-weight: 600;
-    padding: 14px 36px;
+    padding: 10px 24px;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
     color: white;
-    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
     transition: all 0.25s ease;
 }
 
 button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
 }
 
 button:active {
@@ -174,28 +317,35 @@ button:active {
 
 /* Secondary button style for Clear */
 button:last-child {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-    color: var(--color-text);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 button:last-child:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Message area */
 #message {
-    margin-top: 24px;
-    font-size: 1.1rem;
+    position: relative;
+    z-index: 1;
+    margin-top: 12px;
+    font-size: clamp(0.9rem, 3vw, 1rem);
     font-weight: 600;
-    color: var(--color-text);
+    color: white;
     text-align: center;
-    padding: 8px 24px;
+    padding: 8px 16px;
     border-radius: 8px;
-    background: var(--glass-bg);
+    background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    min-height: 44px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    min-height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -207,6 +357,9 @@ button:last-child:hover {
 
 #message:empty {
     visibility: hidden;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
 }
 
 /* Keyframe Animations */
@@ -236,31 +389,109 @@ button:last-child:hover {
     }
 }
 
-/* Responsive adjustments */
-@media (max-width: 480px) {
+/* Portrait mobile - zoom and reposition background to show forehead */
+@media (max-aspect-ratio: 4/5) {
+    :root {
+        --cell-size: min(calc((100vw - 60px) / 9), 40px);
+    }
+    
+    body {
+        /* Zoom in on the face and position forehead area */
+        background-size: 160% auto;
+        background-position: 50% 0%;
+        padding-top: 2vh;
+    }
+    
+    h1 {
+        margin-top: 16vh;
+    }
+}
+
+/* Tall portrait screens (typical phones like iPhone 14 Pro) */
+@media (max-aspect-ratio: 1/2) {
+    :root {
+        --cell-size: min(calc((100vw - 70px) / 9), 38px);
+    }
+    
+    body {
+        background-size: 220% auto;
+        background-position: 50% 0%;
+        padding-top: 2vh;
+    }
+    
+    h1 {
+        margin-bottom: 6px;
+        margin-top: 22vh;
+    }
+}
+
+/* Very tall/narrow screens */
+@media (max-aspect-ratio: 9/20) {
+    body {
+        background-size: 240% auto;
+        background-position: 50% 0%;
+        padding-top: 2vh;
+    }
+    
+    h1 {
+        margin-top: 24vh;
+    }
+}
+
+/* Responsive adjustments for very small screens */
+@media (max-width: 380px) {
+    body {
+        padding: 8px;
+        padding-top: 4vh;
+    }
+    
     .card {
-        padding: 20px;
-        border-radius: 18px;
+        padding: 4px;
     }
     
-    .box {
-        grid-template-columns: repeat(3, 38px);
-        grid-template-rows: repeat(3, 38px);
-    }
-    
-    .box input {
-        width: 38px;
-        height: 38px;
-        font-size: 1rem;
+    h1 {
+        font-size: 1.3rem;
+        margin-bottom: 8px;
     }
     
     .button-container {
-        flex-direction: column;
-        gap: 12px;
+        gap: 8px;
+        margin-top: 12px;
     }
     
     button {
-        padding: 12px 28px;
-        width: 100%;
+        padding: 8px 18px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Landscape orientation - prioritize fitting everything */
+@media (max-height: 600px) {
+    body {
+        background-size: cover;
+        background-position: center top;
+    }
+    
+    h1 {
+        font-size: 1.25rem;
+        margin-bottom: 8px;
+    }
+    
+    .card {
+        padding: 4px;
+    }
+    
+    .button-container {
+        margin-top: 10px;
+    }
+    
+    button {
+        padding: 8px 20px;
+    }
+    
+    #message {
+        margin-top: 8px;
+        padding: 6px 12px;
+        min-height: 28px;
     }
 }

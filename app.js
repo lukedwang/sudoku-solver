@@ -1,5 +1,116 @@
+// ==================== PASSCODE LOGIC ====================
+const CORRECT_PASSCODE = '2401';
+
+function initPasscode() {
+    const passcodeScreen = document.getElementById('passcode-screen');
+    const mainApp = document.getElementById('main-app');
+    const passcodeInputs = document.querySelectorAll('.passcode-digit');
+    const passcodeError = document.getElementById('passcode-error');
+    const submitBtn = document.getElementById('passcode-submit');
+
+    // Check if already authenticated this session
+    if (sessionStorage.getItem('authenticated') === 'true') {
+        passcodeScreen.classList.add('hidden');
+        mainApp.classList.add('visible');
+        return;
+    }
+
+    // Auto-focus first input
+    passcodeInputs[0].focus();
+
+    // Handle input on each digit
+    passcodeInputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            // Only allow digits
+            input.value = input.value.replace(/[^0-9]/g, '');
+            
+            // Add filled class if has value
+            if (input.value) {
+                input.classList.add('filled');
+                // Auto-advance to next input
+                if (index < passcodeInputs.length - 1) {
+                    passcodeInputs[index + 1].focus();
+                }
+            } else {
+                input.classList.remove('filled');
+            }
+            
+            // Clear error when typing
+            passcodeError.textContent = '';
+        });
+
+        // Handle backspace to go to previous input
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !input.value && index > 0) {
+                passcodeInputs[index - 1].focus();
+            }
+            // Submit on Enter if all filled
+            if (e.key === 'Enter') {
+                checkPasscode();
+            }
+        });
+
+        // Handle paste
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, 4);
+            pastedData.split('').forEach((char, i) => {
+                if (passcodeInputs[i]) {
+                    passcodeInputs[i].value = char;
+                    passcodeInputs[i].classList.add('filled');
+                }
+            });
+            if (pastedData.length > 0) {
+                passcodeInputs[Math.min(pastedData.length, 3)].focus();
+            }
+        });
+    });
+
+    // Submit button handler
+    submitBtn.addEventListener('click', checkPasscode);
+
+    function checkPasscode() {
+        const enteredCode = Array.from(passcodeInputs).map(i => i.value).join('');
+        
+        if (enteredCode.length < 4) {
+            passcodeError.textContent = 'Please enter all 4 digits';
+            return;
+        }
+
+        if (enteredCode === CORRECT_PASSCODE) {
+            // Success - hide passcode screen, show app
+            sessionStorage.setItem('authenticated', 'true');
+            passcodeScreen.classList.add('hidden');
+            mainApp.classList.add('visible');
+        } else {
+            // Wrong passcode - show error and shake
+            passcodeError.textContent = 'Incorrect passcode';
+            const inputsContainer = document.querySelector('.passcode-inputs');
+            inputsContainer.classList.add('shake');
+            
+            // Remove shake class after animation
+            setTimeout(() => {
+                inputsContainer.classList.remove('shake');
+            }, 500);
+
+            // Clear inputs
+            passcodeInputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('filled');
+            });
+            passcodeInputs[0].focus();
+        }
+    }
+}
+
+// ==================== MAIN APP LOGIC ====================
+
 // Wait for DOM to load
 window.addEventListener('DOMContentLoaded', () => {
+    // Initialize passcode screen
+    initPasscode();
+
+    // Initialize sudoku grid inputs
     const inputs = document.querySelectorAll('.box input');
 
     inputs.forEach(input => {
